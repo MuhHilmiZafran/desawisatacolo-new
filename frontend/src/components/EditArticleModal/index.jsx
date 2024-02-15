@@ -9,6 +9,7 @@ import axios from "axios";
 import { Skeleton } from "@mui/material";
 import Dropdown from "../Dropdown";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
   const [isPopup, setIsPopup] = useState(false);
@@ -51,7 +52,9 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
   const fetchArticleById = async () => {
     if (articleId) {
       try {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/articles/${articleId}`;
+        const url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/articles/${articleId}`;
         const response = await axios.get(url);
         setArticle(response.data);
       } catch (error) {
@@ -61,8 +64,6 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
       }
     }
   };
-
-  const handleSelectTopic = () => {};
 
   const handlePopup = (type, message) => {
     setIsPopup(true);
@@ -79,16 +80,9 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
   };
 
   const onSubmit = async (data) => {
-    // const url = `http://localhost:8080/api/articles/${articleId}`;
-
     console.log("data: ", data);
     const formData = new FormData();
     formData.append("title", data.title);
-    // formData.append("image", data.image[0]);
-
-    // Check if a new image is being uploaded
-    // formData.append('image', selectedImage);
-    console.log(data.image[0]);
 
     if (data.image[0] instanceof File) {
       formData.append("image", data.image[0]);
@@ -109,18 +103,12 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
         data: formData,
       };
 
-      // console.log(data);
-
-      // const response = await axios.put(url, formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
       const response = await axios(config);
 
       if (response.status === 200) {
         // Handle success (redirect or show a success message)
-        handlePopup(true, "Data updated successfully");
+        handlePopup(true, "Data Berhasil diubah");
+        updateData();
         onClose(false); // Close the modal
       } else {
         // Handle unexpected response status
@@ -141,36 +129,16 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
 
   return (
     <>
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
+
       {/* Your existing modal JSX */}
       <Modal isOpen={openModal} onClose={handleClose} type={"edit"}>
         <Modal.Title title={"Edit Artikel"} />
         <div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
-            {/* Input fields and form elements (similar to the add modal) */}
-            {/* <ImageUploader
-              className="mb-4"
-              icon={<AddRounded />}
-              handleChange={(file) => handleImageChange(file)}
-            >
-              {imagePreview ? (
-                <>
-                  {isLoading ? (
-                    <Skeleton
-                      variant="circular"
-                      width={100 + "%"}
-                      height={100 + "%"}
-                    />
-                  ) : (
-                    <Imageimage src={imagePreview} />
-                  )}
-                </>
-              ) : (
-                <Imageimage alt={""} />
-              )}
-            </ImageUploader> */}
 
             <div className="flex gap-20">
-              <div  className="w-[600px]">
+              <div className="w-[600px]">
                 <InputField
                   name="title"
                   label="Judul"
@@ -179,19 +147,6 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
                   errors={errors}
                   register={register}
                 />
-
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
 
                 <label htmlFor="description">
                   Deskripsi
@@ -220,19 +175,19 @@ const EditArticleModal = ({ openModal, onClose, updateData, articleId }) => {
             </div>
 
             <ButtonPrimary
-              className="w-full flex justify-center items-center"
+              className="w-full flex justify-center items-center bg-cyan-400 hover:bg-cyan-500"
               type="submit"
             >
               {" "}
-              <span className="text-[16px] font-medium">Save Changes</span>
+              <span className="text-[16px] font-medium text-white">Simpan</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium">Cancel</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

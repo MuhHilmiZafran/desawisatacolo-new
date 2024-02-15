@@ -5,8 +5,6 @@ import { useClickOutside } from "../../hooks/useClickOutside";
 const Modal = ({ isOpen, onClose, children, type }) => {
   const wrapperModal = useRef(null);
 
-  useClickOutside(wrapperModal, onClose);
-
   if (!isOpen) return null;
 
   let paddingModal = "";

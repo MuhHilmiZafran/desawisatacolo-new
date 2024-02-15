@@ -6,6 +6,7 @@ import Modal from "../Modal";
 import ButtonPrimary from "../ButtonPrimary";
 import InputField from "../InputField";
 import axios from "axios";
+import Popup from "../Popup";
 
 const AddTourPackageModal = ({ openModal, onClose, updateData }) => {
   const [topics, setTopics] = useState([]);
@@ -104,7 +105,13 @@ const AddTourPackageModal = ({ openModal, onClose, updateData }) => {
       );
 
       // Handle success (redirect or show a success message)
-      console.log("Data added successfully");
+      handlePopup(true, "Data berhasil ditambahkan");
+      updateData();
+      reset();
+      setSelectedFacilities([]);
+      setSelectedImage(null);
+      setImagePreview("");
+
     } catch (error) {
       // Handle error (show an error message)
       console.error("Error adding data:", error);
@@ -112,15 +119,15 @@ const AddTourPackageModal = ({ openModal, onClose, updateData }) => {
   };
 
   const handleClose = () => {
-    // reset();
-    // setSelectedImage(null)
-    // setImagePreview('');
+    reset();
+    setSelectedImage(null)
+    setImagePreview('');
     onClose(false);
   };
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={handleClose} type={"add"}>
         <Modal.Title title={"Tambah Paket Wisata"} />
@@ -136,37 +143,6 @@ const AddTourPackageModal = ({ openModal, onClose, updateData }) => {
                   errors={errors}
                   register={register}
                 />
-
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
-                {/* <Dropdown
-              control={control}
-              name={"category_id"}
-              label={"Kategori"}
-              placeholder={selectedCategory?.name}
-              handleSelect={handleSelectTopic}
-              errors={errors}
-            >
-              {categories.map((category) => (
-                <option
-                  label={category.name}
-                  value={category.id}
-                  key={category.id}
-                >
-                  {category.name}
-                </option>
-              ))}
-            </Dropdown> */}
                 <InputField
                   name="price"
                   label="Harga"
@@ -265,17 +241,17 @@ const AddTourPackageModal = ({ openModal, onClose, updateData }) => {
                 <option label={topic.name} value={topic.id} key={topic.id} />
               ))}
             </Dropdown> */}
-            <ButtonPrimary className="w-full flex justify-center items-center">
+            <ButtonPrimary className="w-full flex justify-center items-center  bg-cyan-400 hover:bg-cyan-500">
               {" "}
-              <span className="text-[16px] font-medium">Save</span>
+              <span className="text-[16px] font-medium text-white">Tambah</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium">Discard</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

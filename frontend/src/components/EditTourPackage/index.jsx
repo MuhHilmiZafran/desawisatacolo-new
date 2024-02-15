@@ -9,6 +9,7 @@ import axios from "axios";
 import { Skeleton } from "@mui/material";
 import Dropdown from "../Dropdown";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const EditTourPackageModal = ({
   openModal,
@@ -25,8 +26,6 @@ const EditTourPackageModal = ({
   const [facilities, setFacilities] = useState([]);
   const [selectedFacilities, setSelectedFacilities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const {
     register,
@@ -48,7 +47,6 @@ const EditTourPackageModal = ({
       setValue("min_people", tourPackage?.min_people);
       setValue("max_people", tourPackage?.max_people);
       setSelectedFacilities(tourPackage?.facilities.split(","));
-
     }
 
     console.log(selectedImage);
@@ -64,7 +62,9 @@ const EditTourPackageModal = ({
   const fetchTourPackageById = async () => {
     if (tourPackageId) {
       try {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/tour-packages/${tourPackageId}`;
+        const url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/tour-packages/${tourPackageId}`;
         const response = await axios.get(url);
         setTourPackage(response.data);
       } catch (error) {
@@ -77,9 +77,11 @@ const EditTourPackageModal = ({
 
   const getFasilitas = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/facilities`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/facilities`
+      );
       setFacilities(response.data);
-      // console.log(response.data);
+      
     } catch (error) {
       console.error("Error fetching attractions:", error);
     }
@@ -104,8 +106,6 @@ const EditTourPackageModal = ({
     });
   };
 
-  const handleSelectTopic = () => {};
-
   const handlePopup = (type, message) => {
     setIsPopup(true);
     setPopupSuccess(type);
@@ -120,17 +120,10 @@ const EditTourPackageModal = ({
     setImagePreview(imageUrl);
   };
 
-
   const onSubmit = async (data) => {
-    // const url = `http://localhost:8080/api/tour-packages/${tourPackageId}`;
-
     console.log("data: ", data);
     const formData = new FormData();
     formData.append("name", data.name);
-    // formData.append("image", data.image[0]);
-
-    // Check if a new image is being uploaded
-    // formData.append('image', selectedImage);
     console.log(data.image[0]);
 
     if (data.image[0] instanceof File) {
@@ -156,18 +149,12 @@ const EditTourPackageModal = ({
         data: formData,
       };
 
-      // console.log(data);
-
-      // const response = await axios.put(url, formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
       const response = await axios(config);
 
       if (response.status === 200) {
         // Handle success (redirect or show a success message)
-        handlePopup(true, "Data updated successfully");
+        handlePopup(true, "Data berhasil diubah");
+        updateData();
         onClose(false); // Close the modal
       } else {
         // Handle unexpected response status
@@ -188,33 +175,13 @@ const EditTourPackageModal = ({
 
   return (
     <>
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
+
       {/* Your existing modal JSX */}
       <Modal isOpen={openModal} onClose={handleClose} type={"edit"}>
         <Modal.Title title={"Edit Paket Wisata"} />
         <div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
-            {/* Input fields and form elements (similar to the add modal) */}
-            {/* <ImageUploader
-              className="mb-4"
-              icon={<AddRounded />}
-              handleChange={(file) => handleImageChange(file)}
-            >
-              {imagePreview ? (
-                <>
-                  {isLoading ? (
-                    <Skeleton
-                      variant="circular"
-                      width={100 + "%"}
-                      height={100 + "%"}
-                    />
-                  ) : (
-                    <Imageimage src={imagePreview} />
-                  )}
-                </>
-              ) : (
-                <Imageimage alt={""} />
-              )}
-            </ImageUploader> */}
             <div className="flex gap-20">
               <div className="w-[600px]">
                 <InputField
@@ -226,36 +193,6 @@ const EditTourPackageModal = ({
                   register={register}
                 />
 
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
-                {/* <Dropdown
-              control={control}
-              name={"category_id"}
-              label={"Kategori"}
-              placeholder={selectedCategory?.name}
-              handleSelect={handleSelectTopic}
-              errors={errors}
-            >
-              {categories.map((category) => (
-                <option
-                  label={category.name}
-                  value={category.id}
-                  key={category.id}
-                >
-                  {category.name}
-                </option>
-              ))}
-            </Dropdown> */}
                 <InputField
                   name="price"
                   label="Harga"
@@ -280,7 +217,7 @@ const EditTourPackageModal = ({
                   errors={errors}
                   register={register}
                 />
-                  <div className="mb-4">
+                <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
                     Fasilitas
                   </label>
@@ -344,16 +281,16 @@ const EditTourPackageModal = ({
             </div>
 
             <ButtonPrimary
-              className="w-full flex justify-center items-center"
+              className="w-full flex justify-center items-center bg-cyan-400 hover:bg-cyan-500"
               type="submit"
             >
               {" "}
-              <span className="text-[16px] font-medium">Save Changes</span>
+              <span className="text-[16px] font-medium text-white">Simpan</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
             <span className="text-[16px] font-medium">Cancel</span>

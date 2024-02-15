@@ -20,7 +20,7 @@ const Dashboard = ({ page }) => {
       <div className="w-full">
         <NavBarDashboard page={page} />
 
-        <div className="h-full max-h-[500px] overflow-auto px-9 py-5">
+        <div className="h-full max-h-[550px] overflow-auto px-9 py-10">
           <Outlet />
         </div>
       </div>

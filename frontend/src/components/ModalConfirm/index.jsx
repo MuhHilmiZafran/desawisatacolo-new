@@ -1,9 +1,12 @@
 import React, { useRef } from "react";
 
 import { Button } from "@mui/material";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 const ModalConfirm = ({ isConfirm, onClose, messages, onSure }) => {
   const wrapperModal = useRef(null);
+
+  useClickOutside(wrapperModal, onClose);
 
   if (!isConfirm) return null;
 
@@ -17,10 +20,10 @@ const ModalConfirm = ({ isConfirm, onClose, messages, onSure }) => {
           </div>
           <div className="flex flex-col gap-[16px] items-center w-full  font-medium">
             <Button className="w-full" onClick={onSure}>
-              Sure
+              Ya
             </Button>
             <Button className="w-full" onClick={() => onClose(false)}>
-              Maybe Later
+              Tidak
             </Button>
           </div>
         </div>

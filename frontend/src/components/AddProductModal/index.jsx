@@ -7,6 +7,7 @@ import ButtonPrimary from "../ButtonPrimary";
 import InputField from "../InputField";
 import axios from "axios";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const AddProductModal = ({ openModal, onClose, updateData }) => {
   const [topics, setTopics] = useState([]);
@@ -25,18 +26,6 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
     reset,
   } = useForm();
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  //   control,
-  //   reset,
-  // } = useForm();
-
-  // useEffect(() => {
-  //   getTopics();
-  // }, []);
-
   const handlePopup = (type, message) => {
     setIsPopup(true);
     setPopupSuccess(type);
@@ -45,20 +34,6 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
       setIsPopup(false);
     }, 2000);
   };
-
-  // const getTopics = async () => {
-  //   const token = getAuthCookie();
-  //   try {
-  //     const response = await axios.get(`${VITE_API_BASE_URL}/users/public/topics`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     setTopics(response.data.data.topics);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleImageChange = (file) => {
     setSelectedImage(file);
@@ -73,7 +48,7 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
     try {
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("image", data.image[0]); // Assuming image is a file input
+      formData.append("image", data.image[0]);
       formData.append("description", data.description);
       formData.append("price", data.price);
       formData.append("amount", data.amount);
@@ -86,24 +61,29 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
         },
       });
 
-      // Handle success (redirect or show a success message)
-      console.log("Data added successfully");
+      // updateData();
+      handlePopup(true, "Tambah Data Berhasil");
+      reset();
+      setSelectedImage(null);
+      setImagePreview("");
+      updateData();
     } catch (error) {
       // Handle error (show an error message)
       console.error("Error adding data:", error);
+      handlePopup(false, "Tambah Data Gagal");
     }
   };
 
   const handleClose = () => {
-    // reset();
-    // setSelectedImage(null)
-    // setImagePreview('');
+    reset();
+    setSelectedImage(null)
+    setImagePreview('');
     onClose(false);
   };
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={handleClose} type={"add"}>
         <Modal.Title title={"Tambah Oleh-oleh"} />
@@ -119,37 +99,6 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
                   errors={errors}
                   register={register}
                 />
-
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
-                {/* <Dropdown
-              control={control}
-              name={"category_id"}
-              label={"Kategori"}
-              placeholder={selectedCategory?.name}
-              handleSelect={handleSelectTopic}
-              errors={errors}
-            >
-              {categories.map((category) => (
-                <option
-                  label={category.name}
-                  value={category.id}
-                  key={category.id}
-                >
-                  {category.name}
-                </option>
-              ))}
-            </Dropdown> */}
                 <InputField
                   name="price"
                   label="Harga"
@@ -203,17 +152,17 @@ const AddProductModal = ({ openModal, onClose, updateData }) => {
                 <option label={topic.name} value={topic.id} key={topic.id} />
               ))}
             </Dropdown> */}
-            <ButtonPrimary className="w-full flex justify-center items-center">
+            <ButtonPrimary className="w-full flex justify-center items-center  bg-cyan-400 hover:bg-cyan-500">
               {" "}
-              <span className="text-[16px] font-medium">Save</span>
+              <span className="text-[16px] font-medium text-white">Tambah</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium">Discard</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

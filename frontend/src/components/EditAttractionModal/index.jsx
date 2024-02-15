@@ -9,6 +9,7 @@ import axios from "axios";
 import { Skeleton } from "@mui/material";
 import Dropdown from "../Dropdown";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const EditAttractionModal = ({
   openModal,
@@ -50,8 +51,6 @@ const EditAttractionModal = ({
       setValue("latitude", attraction?.latitude);
       setValue("longitude", attraction?.longitude);
     }
-
-    console.log(selectedImage);
   }, [attraction, setValue]);
 
   useEffect(() => {
@@ -63,7 +62,9 @@ const EditAttractionModal = ({
   const fetchAttractionById = async () => {
     if (attractionId) {
       try {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/attractions/${attractionId}`;
+        const url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/attractions/${attractionId}`;
         const response = await axios.get(url);
         setAttraction(response.data);
       } catch (error) {
@@ -82,7 +83,9 @@ const EditAttractionModal = ({
 
   const getCategory = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/categories`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/categories`
+      );
       setCategories(response.data); // Assuming the attractions data is an array
     } catch (error) {
       console.error("Error fetching attractions:", error);
@@ -99,7 +102,9 @@ const EditAttractionModal = ({
   const getCategoryById = async () => {
     try {
       if (attraction?.category_id) {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/categories/${attraction?.category_id}`;
+        const url = `${import.meta.env.VITE_API_BASE_URL}/api/categories/${
+          attraction?.category_id
+        }`;
         const response = await axios.get(url);
         setSelectedCategory(response.data);
       }
@@ -110,7 +115,9 @@ const EditAttractionModal = ({
 
   const getFasilitas = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/facilities`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/facilities`
+      );
       setFacilities(response.data);
       // console.log(response.data);
     } catch (error) {
@@ -147,7 +154,7 @@ const EditAttractionModal = ({
       setIsPopup(false);
     }, 2000);
   };
-  
+
   const handleImageChange = (file) => {
     setSelectedImage(file);
     const imageUrl = URL.createObjectURL(file);
@@ -155,18 +162,11 @@ const EditAttractionModal = ({
   };
 
   const onSubmit = async (data) => {
-    // const url = `http://localhost:8080/api/attractions/${attractionId}`;
-
     console.log("data: ", data);
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("category_id", data.category_id);
     formData.append("facilities", selectedFacilities.join(","));
-    // formData.append("thumbnail", data.thumbnail[0]);
-
-    // Check if a new thumbnail is being uploaded
-    // formData.append('thumbnail', selectedImage);
-    console.log(data.thumbnail[0]);
 
     if (data.thumbnail[0] instanceof File) {
       formData.append("thumbnail", data.thumbnail[0]);
@@ -190,18 +190,12 @@ const EditAttractionModal = ({
         data: formData,
       };
 
-      // console.log(data);
-
-      // const response = await axios.put(url, formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
       const response = await axios(config);
 
       if (response.status === 200) {
         // Handle success (redirect or show a success message)
         handlePopup(true, "Data updated successfully");
+        updateData();
         onClose(false); // Close the modal
       } else {
         // Handle unexpected response status
@@ -222,33 +216,13 @@ const EditAttractionModal = ({
 
   return (
     <>
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
+
       {/* Your existing modal JSX */}
       <Modal isOpen={openModal} onClose={handleClose} type={"edit"}>
         <Modal.Title title={"Edit Destinasi Wisata"} />
         <div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
-            {/* Input fields and form elements (similar to the add modal) */}
-            {/* <ImageUploader
-              className="mb-4"
-              icon={<AddRounded />}
-              handleChange={(file) => handleImageChange(file)}
-            >
-              {imagePreview ? (
-                <>
-                  {isLoading ? (
-                    <Skeleton
-                      variant="circular"
-                      width={100 + "%"}
-                      height={100 + "%"}
-                    />
-                  ) : (
-                    <ImageThumbnail src={imagePreview} />
-                  )}
-                </>
-              ) : (
-                <ImageThumbnail alt={""} />
-              )}
-            </ImageUploader> */}
             <div className="flex gap-20">
               <div className="w-[600px]">
                 <InputField
@@ -368,19 +342,19 @@ const EditAttractionModal = ({
             </div>
 
             <ButtonPrimary
-              className="w-full flex justify-center items-center"
+              className="w-full flex justify-center items-center  bg-cyan-400 hover:bg-cyan-500"
               type="submit"
             >
               {" "}
-              <span className="text-[16px] font-medium">Save Changes</span>
+              <span className="text-[16px] font-medium text-white">Simpan</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium">Cancel</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

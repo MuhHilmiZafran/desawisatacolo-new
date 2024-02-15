@@ -173,6 +173,32 @@ class ProductTransaction extends ResourceController
         ]
       ];
 
+      return $this->respondUpdated($response);
+    } else {
+      // Respond with a not found error if product_transaction is not found
+      return $this->failNotFound('product_transaction not found');
+    }
+  }
+
+  public function sendWaybill($id = null)
+  {
+    $data = $this->model->find($id);
+
+    // Fetch the product_transaction data by ID
+    $data = [
+      'no_resi' => $this->request->getVar('no_resi'),
+      'status' => "Terkirim",
+    ];
+    if ($this->model->update($id, $data)) {
+      // Respond with a success message
+      $response = [
+        'status' => 200, // HTTP 200 OK
+        'error' => null,
+        'messages' => [
+          'success' => 'product_transaction data updated successfully'
+        ]
+      ];
+
 
       return $this->respondUpdated($response);
     } else {

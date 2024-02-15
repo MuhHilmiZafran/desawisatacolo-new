@@ -3,9 +3,6 @@ import ImageViewer from "../ImageViewer";
 import Modal from "../Modal";
 
 const ModalProofPayment = ({ url, openModal, handleClose }) => {
-  useEffect(() => {
-    console.log(url);
-  }, [url]);
 
   return (
     <Modal isOpen={openModal} onClose={handleClose} type={""}>

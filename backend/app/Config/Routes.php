@@ -100,10 +100,15 @@ $routes->post('/api/product-transactions/(:segment)/confirm', 'ProductTransactio
 $routes->post('/api/product-transactions/(:segment)/cancel', 'ProductTransaction::cancelPayment/$1');
 $routes->get('/api/product-transactions/(:segment)/status', 'ProductTransaction::getStatus/$1');
 $routes->post('/api/product-transactions/(:segment)/finish', 'ProductTransaction::finish/$1');
+$routes->post('/api/product-transactions/(:segment)/send-waybill', 'ProductTransaction::sendWaybill/$1');
+
 
 
 // Image
 $routes->get('/api/get-image-url/(:segment)', 'ImageController::getImageUrl/$1');
+
+// Raja Ongkir
+$routes->post('/api/shipping-rates', 'RajaOngkir::getShippingRates');
 
 // // payment
 // $routes->get('/api/payment', 'PaymentController::index');

@@ -33,7 +33,7 @@ const Sidebar = ({ expand, handleExpandSidebar }) => {
     <div className="w-60 h-screen p-6 bg-white shadow flex-col justify-start items-center gap-10 inline-flex">
       <div className="px-9 py-2.5 justify-start items-start gap-2.5 inline-flex">
         <div className="text-black text-xs font-normal font-['Roboto'] leading-none">
-          Logo
+          ADMIN
         </div>
       </div>
       <div className="self-stretch grow shrink basis-0 flex-col justify-start items-start gap-2 flex">

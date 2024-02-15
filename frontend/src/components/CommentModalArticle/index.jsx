@@ -5,9 +5,12 @@ import { Skeleton } from "@mui/material";
 import LogCommentAdmin from "../LogCommentAdmin";
 import axios from "axios";
 import Modal from "../Modal";
+import Popup from "../Popup";
+import DeleteModal from "../DeleteModal";
 
 const CommentModalArticle = ({ openModal, onClose, articleId }) => {
   const [comments, setComments] = useState([]);
+  const [commentId, setCommentId] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [notFoundMsg, setNotFoundMsg] = useState("");
@@ -16,6 +19,8 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
   const [popupSuccess, setPopupSuccess] = useState(true);
   const [popupMessage, setPopupMessage] = useState("success");
 
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+
   const handlePopup = (type, message) => {
     setIsPopup(true);
     setPopupSuccess(type);
@@ -23,6 +28,16 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
     setTimeout(function () {
       setIsPopup(false);
     }, 2000);
+  };
+
+  const handleOpenModalDelete = (commentId) => {
+    setIsShowModalDelete(true);
+    setCommentId(commentId);
+  };
+
+  const handleShowModalDelete = (showModal) => {
+    setIsShowModalDelete(showModal);
+    setCommentId("");
   };
 
   useEffect(() => {
@@ -34,14 +49,16 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
     if (articleId) {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/articles/${articleId}/comments`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/articles/${articleId}/comments`
         );
 
         console.log(response.data);
 
         setIsLoading(false);
         if (response.data.length < 1) {
-          setNotFoundMsg("What you are looking for doesn't exist");
+          setNotFoundMsg("Tidak ada komentar");
           setComments([]);
         } else {
           setComments(response.data);
@@ -67,7 +84,7 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={onClose}>
         <div className="p-[32px] flex flex-col w-full">
@@ -107,7 +124,7 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
                     <LogCommentAdmin
                       key={comment.id}
                       payload={comment}
-                      deleteComment={() => deleteComment(comment.id)}
+                      deleteComment={() => handleOpenModalDelete(comment.id)}
                     />
                   )
                 )
@@ -120,6 +137,11 @@ const CommentModalArticle = ({ openModal, onClose, articleId }) => {
           </div>
         </div>
       </Modal>
+      <DeleteModal
+        modalState={isShowModalDelete}
+        closeModal={handleShowModalDelete}
+        onSure={() => deleteComment(commentId)}
+      />
     </>
   );
 };

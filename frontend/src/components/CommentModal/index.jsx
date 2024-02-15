@@ -6,9 +6,12 @@ import LogCommentAdmin from "../LogCommentAdmin";
 import axios from "axios";
 import Modal from "../Modal";
 import { set } from "react-hook-form";
+import Popup from "../Popup";
+import DeleteModal from "../DeleteModal";
 
 const CommentModal = ({ openModal, onClose, attractionId }) => {
   const [comments, setComments] = useState([]);
+  const [commentId, setCommentId] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [notFoundMsg, setNotFoundMsg] = useState("");
@@ -16,6 +19,8 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
   const [isPopup, setIsPopup] = useState(false);
   const [popupSuccess, setPopupSuccess] = useState(true);
   const [popupMessage, setPopupMessage] = useState("success");
+
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
 
   const handlePopup = (type, message) => {
     setIsPopup(true);
@@ -42,7 +47,7 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
 
         setIsLoading(false);
         if (response.data.length < 1) {
-          setNotFoundMsg("What you are looking for doesn't exist");
+          setNotFoundMsg("Tidak ada komentar");
           setComments([]);
         } else {
           setComments(response.data);
@@ -54,6 +59,16 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
     }
   };
 
+  const handleOpenModalDelete = (commentId) => {
+    setIsShowModalDelete(true);
+    setCommentId(commentId);
+  };
+
+  const handleShowModalDelete = (showModal) => {
+    setIsShowModalDelete(showModal);
+    setCommentId("");
+  };
+
   const deleteComment = async (commentId) => {
     try {
       const response = await axios.delete(
@@ -61,15 +76,16 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
       );
 
       console.log(response.data);
+      handlePopup(true, "Berhasil menghapus komentar");
       window.location.reload();
     } catch (error) {
-      handlePopup(false, "Failed");
+      handlePopup(false, "Gagal menghapus komentar");
     }
   };
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={onClose}>
         <div className="p-[32px] flex flex-col w-full">
@@ -109,7 +125,7 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
                     <LogCommentAdmin
                       key={comment.id}
                       payload={comment}
-                      deleteComment={() => deleteComment(comment.id)}
+                      deleteComment={() => handleOpenModalDelete(comment.id)}
                     />
                   )
                 )
@@ -122,6 +138,11 @@ const CommentModal = ({ openModal, onClose, attractionId }) => {
           </div>
         </div>
       </Modal>
+      <DeleteModal
+        modalState={isShowModalDelete}
+        closeModal={handleShowModalDelete}
+        onSure={() => deleteComment(commentId)}
+      />
     </>
   );
 };

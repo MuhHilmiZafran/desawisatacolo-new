@@ -7,6 +7,7 @@ import ButtonPrimary from "../ButtonPrimary";
 import InputField from "../InputField";
 import axios from "axios";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const AddArticleModal = ({ openModal, onClose, updateData }) => {
   const [topics, setTopics] = useState([]);
@@ -26,18 +27,6 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
     reset,
   } = useForm();
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  //   control,
-  //   reset,
-  // } = useForm();
-
-  // useEffect(() => {
-  //   getTopics();
-  // }, []);
-
   const handlePopup = (type, message) => {
     setIsPopup(true);
     setPopupSuccess(type);
@@ -47,28 +36,12 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
     }, 2000);
   };
 
-  // const getTopics = async () => {
-  //   const token = getAuthCookie();
-  //   try {
-  //     const response = await axios.get(`${VITE_API_BASE_URL}/users/public/topics`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     setTopics(response.data.data.topics);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleImageChange = (file) => {
     setSelectedImage(file);
     const imageUrl = URL.createObjectURL(file);
     setImagePreview(imageUrl);
     console.log(imagePreview);
   };
-
-  const handleSelectTopic = () => {};
 
   const onSubmit = async (data) => {
     try {
@@ -77,8 +50,6 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
       formData.append("image", data.image[0]); // Assuming image is a file input
       formData.append("description", data.description);
       formData.append("views", views);
-
-      console.log(data);
 
       await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/articles`,
@@ -91,7 +62,11 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
       );
 
       // Handle success (redirect or show a success message)
-      console.log("Data added successfully");
+      console.log("Tambah Data Berhasil");
+      handlePopup(true, "Tambah Data Berhasil");
+      updateData();
+      reset();
+      setImagePreview("");
     } catch (error) {
       // Handle error (show an error message)
       console.error("Error adding data:", error);
@@ -99,15 +74,15 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
   };
 
   const handleClose = () => {
-    // reset();
-    // setSelectedImage(null)
-    // setImagePreview('');
+    reset();
+    setSelectedImage(null)
+    setImagePreview('');
     onClose(false);
   };
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={handleClose} type={"add"}>
         <Modal.Title title={"Tambah Article Wisata"} />
@@ -123,19 +98,6 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
                   errors={errors}
                   register={register}
                 />
-
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
 
                 <label htmlFor="description">
                   Deskripsi
@@ -174,17 +136,17 @@ const AddArticleModal = ({ openModal, onClose, updateData }) => {
                 <option label={topic.name} value={topic.id} key={topic.id} />
               ))}
             </Dropdown> */}
-            <ButtonPrimary className="w-full flex justify-center items-center">
+            <ButtonPrimary className="w-full flex justify-center items-center bg-cyan-400 hover:bg-cyan-500">
               {" "}
-              <span className="text-[16px] font-medium text-black">Save</span>
+              <span className="text-[16px] font-medium text-white">Tambah</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium text-black">Discard</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

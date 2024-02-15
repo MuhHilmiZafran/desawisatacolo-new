@@ -9,6 +9,7 @@ import axios from "axios";
 import { Skeleton } from "@mui/material";
 import Dropdown from "../Dropdown";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
   const [isPopup, setIsPopup] = useState(false);
@@ -53,7 +54,9 @@ const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
   const fetchProductById = async () => {
     if (productId) {
       try {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`;
+        const url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/products/${productId}`;
         const response = await axios.get(url);
         setProduct(response.data);
       } catch (error) {
@@ -112,19 +115,12 @@ const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
         },
         data: formData,
       };
-
-      // console.log(data);
-
-      // const response = await axios.put(url, formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
       const response = await axios(config);
 
       if (response.status === 200) {
         // Handle success (redirect or show a success message)
-        handlePopup(true, "Data updated successfully");
+        handlePopup(true, "Data berhasil diubah");
+        updateData();
         onClose(false); // Close the modal
       } else {
         // Handle unexpected response status
@@ -145,33 +141,14 @@ const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
 
   return (
     <>
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
+
       {/* Your existing modal JSX */}
       <Modal isOpen={openModal} onClose={handleClose} type={"edit"}>
         <Modal.Title title={"Edit Oleh-oleh"} />
         <div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
-            {/* Input fields and form elements (similar to the add modal) */}
-            {/* <ImageUploader
-              className="mb-4"
-              icon={<AddRounded />}
-              handleChange={(file) => handleImageChange(file)}
-            >
-              {imagePreview ? (
-                <>
-                  {isLoading ? (
-                    <Skeleton
-                      variant="circular"
-                      width={100 + "%"}
-                      height={100 + "%"}
-                    />
-                  ) : (
-                    <Imageimage src={imagePreview} />
-                  )}
-                </>
-              ) : (
-                <Imageimage alt={""} />
-              )}
-            </ImageUploader> */}
+
             <div className="flex gap-20">
               <div className="w-[600px]">
                 <InputField
@@ -183,36 +160,7 @@ const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
                   register={register}
                 />
 
-                {/* <label>
-              image:
-              <input type="file" {...register("image")} />
-            </label> */}
-                {/* <InputField
-              name="category_id"
-              label="Kategori"
-              type="number"
-              placeholder="Ex : Ruby Jane"
-              errors={errors}
-              register={register}
-            /> */}
-                {/* <Dropdown
-              control={control}
-              name={"category_id"}
-              label={"Kategori"}
-              placeholder={selectedCategory?.name}
-              handleSelect={handleSelectTopic}
-              errors={errors}
-            >
-              {categories.map((category) => (
-                <option
-                  label={category.name}
-                  value={category.id}
-                  key={category.id}
-                >
-                  {category.name}
-                </option>
-              ))}
-            </Dropdown> */}
+              
                 <InputField
                   name="price"
                   label="Harga"
@@ -255,19 +203,19 @@ const EditProductModal = ({ openModal, onClose, updateData, productId }) => {
               </div>
             </div>
             <ButtonPrimary
-              className="w-full flex justify-center items-center"
+              className="w-full flex justify-center items-center bg-cyan-400 hover:bg-cyan-500"
               type="submit"
             >
               {" "}
-              <span className="text-[16px] font-medium">Save Changes</span>
+              <span className="text-[16px] font-medium text-white">Simpan</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium">Cancel</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

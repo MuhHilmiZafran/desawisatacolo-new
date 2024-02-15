@@ -13,7 +13,7 @@ const DashboardAdmin = () => {
   const [countTourPackages, setCountTourPackages] = useState({
     total_tour_packages: 0,
   });
-  const [countProducts, setCountProducts] = useState({ total_products: 0 });
+  const [countProducts, setCountProducts] = useState({ total_product: 0 });
   const [countArticles, setCountArticles] = useState({ total_articles: 0 });
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchValue, setSearchValue] = useState("");

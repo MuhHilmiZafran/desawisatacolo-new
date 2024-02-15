@@ -8,6 +8,7 @@ import InputField from "../InputField";
 import axios from "axios";
 import Dropdown from "../Dropdown";
 import ImageViewer from "../ImageViewer";
+import Popup from "../Popup";
 
 const AddAttractionModal = ({ openModal, onClose, updateData }) => {
   const [categories, setCategories] = useState([]);
@@ -120,9 +121,14 @@ const AddAttractionModal = ({ openModal, onClose, updateData }) => {
           },
         }
       );
+      handlePopup(true, "Tambah Data Berhasil");
+      // updateData();
+      reset();
+      setSelectedFacilities([]);
+      setSelectedImage(null);
+      setImagePreview("");
+      updateData();
 
-      // Handle success (redirect or show a success message)
-      console.log("Data added successfully");
     } catch (error) {
       // Handle error (show an error message)
       console.error("Error adding data:", error);
@@ -131,15 +137,15 @@ const AddAttractionModal = ({ openModal, onClose, updateData }) => {
 
   const handleClose = () => {
     reset();
-    // setSelectedFacilities([]);
-    // setSelectedImage(null)
-    // setImagePreview('');
+    setSelectedFacilities([]);
+    setSelectedImage(null)
+    setImagePreview('');
     onClose(false);
   };
 
   return (
     <>
-      {/* <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} /> */}
+      <Popup isSuccess={popupSuccess} isOpen={isPopup} message={popupMessage} />
 
       <Modal isOpen={openModal} onClose={handleClose} type={"add"}>
         <Modal.Title title={"Tambah Destinasi Wisata"} />
@@ -274,17 +280,17 @@ const AddAttractionModal = ({ openModal, onClose, updateData }) => {
                 <option label={topic.name} value={topic.id} key={topic.id} />
               ))}
             </Dropdown> */}
-            <ButtonPrimary className="w-full flex justify-center items-center">
+            <ButtonPrimary className="w-full flex justify-center items-center bg-cyan-400 hover:bg-cyan-500">
               {" "}
-              <span className="text-[16px] font-medium">Save</span>
+              <span className="text-[16px] font-medium text-white">Tambah</span>
             </ButtonPrimary>
           </form>
 
           <ButtonPrimary
-            className="w-full flex justify-center items-center text-red-600"
+            className="w-full flex justify-center items-center hover:bg-gray-400"
             onClick={handleClose}
           >
-            <span className="text-[16px] font-medium tect">Discard</span>
+            <span className="text-[16px] font-medium">Kembali</span>
           </ButtonPrimary>
         </div>
       </Modal>

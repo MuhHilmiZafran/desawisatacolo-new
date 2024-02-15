@@ -1,12 +1,15 @@
-import React from 'react'
-import ModalConfirm from '../ModalConfirm'
+import React from "react";
+import ModalConfirm from "../ModalConfirm";
 
-
-const DeleteModal = ({modalState, closeModal}) => {
+const DeleteModal = ({ modalState, closeModal, onSure }) => {
   return (
-    <ModalConfirm isConfirm={modalState} onClose={closeModal} messages={'Are you sure you want to delete this item?'} />
-    
-  )
-}
+    <ModalConfirm
+      isConfirm={modalState}
+      onSure={onSure}
+      onClose={closeModal}
+      messages={"Apakah anda yakin ingin menghapus konten ini?"}
+    />
+  );
+};
 
-export default DeleteModal
+export default DeleteModal;
